@@ -1,23 +1,18 @@
 #ifndef MERKLETREE_H
 #define MERKLETREE_H
 
-#include <vector>
 #include <string>
-using namespace std;
+#include <vector>
 
 class MerkleTree {
-public:
-    // Constructor that takes a list of transactions
-    MerkleTree(const vector<string>& transactions);
-
-    // Function to get the Merkle root
-    string getRoot();
-
 private:
-    vector<string> hashLeaves(const vector<string>& transactions);
-    string buildMerkleRoot(vector<string> hashes);
-    string sha256(const string& data); // We'll call your existing sha256 function
-    vector<string> transactions;
+    std::vector<std::string> transactions;
+    std::string root;
+    std::string buildTree(std::vector<std::string> hashes);
+
+public:
+    MerkleTree(const std::vector<std::string>& transactions);
+    std::string getRoot() const;
 };
 
-#endif // MERKLETREE_H
+#endif

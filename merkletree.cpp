@@ -1,38 +1,28 @@
 #include "merkletree.h"
-#include "sha256.h" // Include your SHA256 implementation
-#include <iostream>
+#include "sha256.h"
 
-MerkleTree::MerkleTree(const vector<string>& transactions) : transactions(transactions) {}
-
-vector<string> MerkleTree::hashLeaves(const vector<string>& transactions) {
-    vector<string> hashes;
-    for (const string& tx : transactions) {
-        hashes.push_back(sha256(tx));
+MerkleTree::MerkleTree(const std::vector<std::string>& txs) : transactions(txs) {
+    std::vector<std::string> hashedTxs;
+    for (auto& tx : transactions) {
+        hashedTxs.push_back(sha256(tx));
     }
-    return hashes;
+    root = buildTree(hashedTxs);
 }
 
-string MerkleTree::buildMerkleRoot(vector<string> hashes) {
+std::string MerkleTree::buildTree(std::vector<std::string> hashes) {
     if (hashes.empty()) return "";
-
     while (hashes.size() > 1) {
-        vector<string> newLevel;
-
+        std::vector<std::string> newLevel;
         for (size_t i = 0; i < hashes.size(); i += 2) {
-            if (i + 1 < hashes.size()) {
-                newLevel.push_back(sha256(hashes[i] + hashes[i + 1]));
-            } else {
-                // If odd number of nodes, duplicate last
-                newLevel.push_back(sha256(hashes[i] + hashes[i]));
-            }
+            std::string left = hashes[i];
+            std::string right = (i + 1 < hashes.size()) ? hashes[i + 1] : left;
+            newLevel.push_back(sha256(left + right));
         }
-
         hashes = newLevel;
     }
-
-    return hashes[0]; // Merkle Root
+    return hashes[0];
 }
 
-string MerkleTree::getRoot() {
-    return buildMerkleRoot(hashLeaves(transactions));
+std::string MerkleTree::getRoot() const {
+    return root;
 }

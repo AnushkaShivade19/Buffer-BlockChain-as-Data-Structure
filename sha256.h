@@ -3,8 +3,6 @@
 
 #include <string>
 
-namespace SHA256 {
-    std::string hash(const std::string& input);
-}
+std::string sha256(const std::string& input);
 
-#endif // SHA256_H
+#endif
